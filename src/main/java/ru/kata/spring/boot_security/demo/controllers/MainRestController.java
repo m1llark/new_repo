@@ -64,6 +64,7 @@ public class MainRestController {
 
     @PutMapping("/users/{id}")
     public User updateUser(@RequestBody User user, @PathVariable Long id) {
+
         if (user.getPassword().isEmpty()) {
             user.setPassword(userService.loadUserById(id).getPassword());
             userService.updateUser(user);
