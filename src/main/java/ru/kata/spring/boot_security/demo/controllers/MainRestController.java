@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.util.MyValidator;
 
@@ -17,17 +18,17 @@ import java.util.List;
 
 @RestController
 public class MainRestController {
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final MyValidator myValidator;
+
 
     @Autowired
-    public MainRestController(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder, MyValidator myValidator) {
+    public MainRestController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
-        this.myValidator = myValidator;
+
     }
 
     @GetMapping("/users")
@@ -38,7 +39,7 @@ public class MainRestController {
 
     @GetMapping("/roles")
     public List<Role> showRoles() {
-        return roleRepository.findAll();
+        return roleService.listRoles();
     }
 
     @GetMapping("/users/authenticated")
@@ -47,10 +48,6 @@ public class MainRestController {
         User user =  (User) authentication.getPrincipal();
         return user;
     }
-
-
-
-
 
     @PostMapping("/users")
     public User addUser(@RequestBody User user) {
@@ -69,17 +66,14 @@ public class MainRestController {
     public User updateUser(@RequestBody User user, @PathVariable Long id) {
         if (user.getPassword().isEmpty()) {
             user.setPassword(userService.loadUserById(id).getPassword());
-            userService.saveUser(user);
+            userService.updateUser(user);
         }
         else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userService.saveUser(user);
+            userService.updateUser(user);
         }
         return user;
     }
-
-
-
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable long id) {

@@ -20,15 +20,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
 
 
-
     private final UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-
 
     @Override
     public List<User> listUsers() {
@@ -50,17 +47,21 @@ public class UserServiceImpl implements UserService{
         }
         return false;
     }
+
     @Override
     @Transactional
-    public void saveUser(User user) {
-        userRepository.save(user);
+    public User saveUser(User user) {
+       return userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void updateUser(User user) {
-        userRepository.save(user);
+    public User updateUser(User user) {
+       return userRepository.save(user);
     }
 
+    public User loadUserById(Long id) {
+        return userRepository.findById(id).get();
+    }
 }
 

@@ -18,7 +18,6 @@ public class Role implements GrantedAuthority{
     private Long id;
     private String name;
 
-    // getters and setters are not shown
 
     @Override
     public String toString() {
