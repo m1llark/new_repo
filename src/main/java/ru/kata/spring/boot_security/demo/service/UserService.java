@@ -18,10 +18,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Transactional
 @Service
@@ -38,6 +35,7 @@ public class UserService implements UserDetailsService {
     }
 
 
+
     public List<User> listUsers() {
         return userRepository.findAll();
     }
@@ -46,6 +44,14 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username).orElse(null);
         return user;
+    }
+
+
+
+
+
+    public User loadUserById(Long id) {
+        return userRepository.findById(id).get();
     }
 
     @Transactional
@@ -66,8 +72,9 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveUser(User user) {
-        userRepository.save(user);
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
+
 }
 

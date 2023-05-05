@@ -1,7 +1,9 @@
 package ru.kata.spring.boot_security.demo.models;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,12 +47,8 @@ public class User implements UserDetails {
     @Max(100)
     private Long age;
 
-    @Size(min = 2, message = "Password should be more than 2 digits")
+
     private String password;
-
-
-
-
 
 
     @JoinTable(
@@ -57,7 +56,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<Role> roles = new HashSet<>();
 
 
@@ -113,10 +112,16 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+//    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+        return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
     }
+
 
 
     @Override
@@ -133,7 +138,9 @@ public class User implements UserDetails {
     }
 
     public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 
+
+        this.roles = roles;
+
+    }
 }
