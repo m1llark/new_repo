@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.*;
 
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
     //it works
 
     public List<User> listUsers();

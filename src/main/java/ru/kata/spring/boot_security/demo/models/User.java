@@ -50,6 +50,7 @@ public class User implements UserDetails {
 
     private String password;
 
+    private static final long serialVersionUID = 1113799434508676095L;
 
     @JoinTable(
             name = "users_roles",
@@ -112,10 +113,7 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-//    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -138,9 +136,32 @@ public class User implements UserDetails {
     }
 
     public void setRoles(Set<Role> roles) {
-
-
         this.roles = roles;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (!id.equals(user.id)) return false;
+        if (!username.equals(user.username)) return false;
+        if (!email.equals(user.email)) return false;
+        if (!age.equals(user.age)) return false;
+        if (!password.equals(user.password)) return false;
+        return roles.equals(user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + username.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + age.hashCode();
+        result = 31 * result + password.hashCode();
+        result = 31 * result + roles.hashCode();
+        return result;
     }
 }

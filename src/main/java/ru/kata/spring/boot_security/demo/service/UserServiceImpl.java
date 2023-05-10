@@ -27,12 +27,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return user;
-    }
-
-    @Override
     @Transactional
     public boolean removeUserById(Long userId) {
         if (userRepository.findById(userId).isPresent()) {
